@@ -1,11 +1,18 @@
 package neo.vm;
 
+import neo.log.tr.TR;
+
 /**
  * 这个类是从 Neo.VM.Helper 移植过来。
  * 因为 C# 版的代码中这个类与 Neo.dll 中的另一个类同名。
  * 所以移植到 Java 版时，这个类被重命名为 NVMHelper
  */
 class NVMHelper {
+    public static byte[] ReadVarBytes() {
+        TR.enter();
+
+        return TR.exit(null);
+    }
 // TODO
 //    public static byte[] ReadVarBytes(BinaryReader reader, int max = 0x10000000)
 //    {
