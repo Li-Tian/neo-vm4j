@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import neo.log.notr.TR;
 
 /**
- * 这个类是从 Neo.VM.Helper 移植过来。 因为 C# 版的代码中这个类与 Neo.dll 中的另一个类同名。 所以移植到 Java 版时，这个类被重命名为 NVMHelper
+ * 这个类是从 Neo.VM.Helper 移植过来。因为 C# 版的代码中这个类与 Neo.dll 中的另一个类同名，所以移植到 Java 版时，这个类被重命名为 NVMHelper
  */
 class NVMHelper {
 
@@ -69,18 +69,17 @@ class NVMHelper {
         if (fb == 0xFDL) {
             byte[] temp = new byte[2];
             reader.read(temp);
-            temp = reverse(temp);
-            value = ByteBuffer.wrap(temp).getShort() & 0xFFFFL;
+            short tempValue = Short.reverseBytes(ByteBuffer.wrap(temp).getShort());
+            value = tempValue & 0xFFFFL;
         } else if (fb == 0xFEL) {
             byte[] temp = new byte[4];
             reader.read(temp);
-            temp = reverse(temp);
-            value = ByteBuffer.wrap(temp).getInt() & 0xFFFFFFFFL;
+            int tempValue = Integer.reverseBytes(ByteBuffer.wrap(temp).getInt());
+            value = tempValue & 0xFFFFFFFFL;
         } else if (fb == 0xFF) {
             byte[] temp = new byte[8];
             reader.read(temp);
-            temp = reverse(temp);
-            value = ByteBuffer.wrap(temp).getLong();
+            value = Long.reverseBytes(ByteBuffer.wrap(temp).getLong());
             if (value < 0) {
                 TR.exit();
                 throw new IOException("VarInt out of range of long in java");
@@ -92,14 +91,6 @@ class NVMHelper {
             throw new IOException("VarInt out of specified range : " + value);
         }
         return TR.exit(value);
-    }
-
-    private static byte[] reverse(byte[] data) {
-        byte[] result = new byte[data.length];
-        for (int i = 0; i < data.length; i++) {
-            result[i] = data[data.length - 1 - i];
-        }
-        return result;
     }
 
     /**

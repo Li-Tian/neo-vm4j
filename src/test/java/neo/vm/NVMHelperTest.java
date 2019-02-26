@@ -25,13 +25,51 @@ public class NVMHelperTest {
     public void testReadVarInt() {
         byte[] sample = {(byte) 0xFE, 1, 2, 3, 4};
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(sample);
-        long value = 0;
+        long value;
         try {
             value = NVMHelper.readVarInt(byteArrayInputStream);
+            Assert.assertEquals(67305985, value);
         } catch (IOException e) {
             Assert.fail();
         }
-        Assert.assertEquals(67305985, value);
     }
 
+    @Test
+    public void testReadVarInt2() {
+        byte[] sample = {(byte) 0xFF, 1, 2, 3, 4, 5, 6, 7, 8};
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(sample);
+        long value;
+        try {
+            value = NVMHelper.readVarInt(byteArrayInputStream);
+            Assert.assertEquals(578437695752307201L, value);
+        } catch (IOException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testReadVarInt3() {
+        byte[] sample = {(byte) 0xFD, 1, 2};
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(sample);
+        long value;
+        try {
+            value = NVMHelper.readVarInt(byteArrayInputStream);
+            Assert.assertEquals(513, value);
+        } catch (IOException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testReadVarInt4() {
+        byte[] sample = {(byte) 0xFC};
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(sample);
+        long value;
+        try {
+            value = NVMHelper.readVarInt(byteArrayInputStream);
+            Assert.assertEquals(252, value);
+        } catch (IOException e) {
+            Assert.fail();
+        }
+    }
 }
