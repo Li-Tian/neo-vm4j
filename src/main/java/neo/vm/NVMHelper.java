@@ -2,8 +2,8 @@ package neo.vm;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 
+import neo.csharp.BitConverter;
 import neo.log.notr.TR;
 
 /**
@@ -60,33 +60,7 @@ class NVMHelper {
      */
     public static long readVarInt(InputStream reader, long max) throws IOException {
         TR.enter();
-        long fb = reader.read();
-        if (fb < 0 || fb > 255) {
-            TR.exit();
-            throw new IOException("Wrong format for VarInt");
-        }
-        long value;
-        if (fb == 0xFDL) {
-            byte[] temp = new byte[2];
-            reader.read(temp);
-            short tempValue = Short.reverseBytes(ByteBuffer.wrap(temp).getShort());
-            value = tempValue & 0xFFFFL;
-        } else if (fb == 0xFEL) {
-            byte[] temp = new byte[4];
-            reader.read(temp);
-            int tempValue = Integer.reverseBytes(ByteBuffer.wrap(temp).getInt());
-            value = tempValue & 0xFFFFFFFFL;
-        } else if (fb == 0xFF) {
-            byte[] temp = new byte[8];
-            reader.read(temp);
-            value = Long.reverseBytes(ByteBuffer.wrap(temp).getLong());
-            if (value < 0) {
-                TR.exit();
-                throw new IOException("VarInt out of range of long in java");
-            }
-        } else {
-            value = fb;
-        }
+        long value = BitConverter.decodeVarInt(reader);
         if (value > max) {
             throw new IOException("VarInt out of specified range : " + value);
         }
