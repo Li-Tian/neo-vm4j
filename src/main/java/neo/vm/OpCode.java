@@ -1,5 +1,8 @@
 package neo.vm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author doubi.liu
  * @version V1.0
@@ -13,8 +16,8 @@ public enum OpCode {
     /// <summary>
     /// An empty array of bytes is pushed onto the stack.
     /// </summary>
+    PUSHF(0x00),
     PUSH0(0x00),
-    PUSHF(PUSH0),
     /// <summary>
     /// 0x01-0x4B The next opcode bytes is data to be pushed onto the stack
     /// </summary>
@@ -485,6 +488,13 @@ public enum OpCode {
     /// </summary>
     THROWIFNOT(0xF1);
 
+    private static final Map<Byte, OpCode> byteToTypeMap = new HashMap<Byte, OpCode>();
+
+    static {
+        for (OpCode type : OpCode.values()) {
+            byteToTypeMap.put(type.getCode(), type);
+        }
+    }
     private byte code;
 
     OpCode(int value) {
@@ -497,5 +507,13 @@ public enum OpCode {
 
     public byte getCode() {
         return code;
+    }
+
+    public static OpCode fromByte(byte i) {
+        OpCode type = byteToTypeMap.get(i);
+        if (type == null){
+            throw new UnsupportedOperationException();
+        }
+        return type;
     }
 }

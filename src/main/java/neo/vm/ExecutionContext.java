@@ -1,5 +1,8 @@
 package neo.vm;
 
+import neo.csharp.io.BinaryReader;
+import neo.csharp.io.MemoryStream;
+
 /**
  * @author doubi.liu
  * @version V1.0
@@ -9,92 +12,106 @@ package neo.vm;
  * @date Created in 17:23 2019/2/27
  */
 public class ExecutionContext {
-/*
 
-    /// <summary>
-    /// Number of items to be returned
-    /// </summary>
+    //返回的items数量
     private int RVCount;
 
-    /// <summary>
-    /// Binary Reader of the script
-    /// </summary>
-    private BinaryReader OpReader;
+    //脚本的BinaryReader
+    private BinaryReader opReader;
 
-    /// <summary>
-    /// Script
-    /// </summary>
-    public readonly Script Script;
+    //脚本的BinaryReader的流
+    private MemoryStream opReaderStream;
 
-    /// <summary>
-    /// Evaluation stack
-    /// </summary>
-    public RandomAccessStack<StackItem> EvaluationStack { get; } = new RandomAccessStack<StackItem>();
+    //Script
+    public Script script;
 
-    /// <summary>
-    /// Alternative stack
-    /// </summary>
-    public RandomAccessStack<StackItem> AltStack { get; } = new RandomAccessStack<StackItem>();
 
-    /// <summary>
-    /// Instruction pointer
-    /// </summary>
-    public int InstructionPointer
-    {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return (int)OpReader.BaseStream.Position;
-        }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        set
-        {
-            OpReader.BaseStream.Seek(value, SeekOrigin.Begin);
-        }
+    //计算栈 Evaluation stack
+    public RandomAccessStack<StackItem> evaluationStack = new RandomAccessStack<StackItem>();
+
+    /// 临时栈 Alternative stack
+    public RandomAccessStack<StackItem> altStack = new RandomAccessStack<StackItem>();
+
+
+    /**
+     * @Author:doubi.liu
+     * @description:获取计算栈
+     * @date:2019/2/28
+     */
+    public RandomAccessStack<StackItem> getEvaluationStack() {
+        return evaluationStack;
     }
 
-    /// <summary>
-    /// Next instruction
-    /// </summary>
-    public OpCode NextInstruction
-    {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            var position = (int)OpReader.BaseStream.Position;
-
-            return position >= Script.Length ? OpCode.RET : Script[position];
-        }
+    /**
+     * @Author:doubi.liu
+     * @description:获取临时栈
+     * @date:2019/2/28
+     */
+    public RandomAccessStack<StackItem> getAltStack() {
+        return altStack;
     }
 
-    /// <summary>
-    /// Cached script hash
-    /// </summary>
-    public byte[] ScriptHash
-    {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        get
-        {
-            return Script.ScriptHash;
-        }
+    /**
+      * @Author:doubi.liu
+      * @description:获取指令指针
+      * @param
+      * @date:2019/2/28
+    */
+    public int getInstructionPointer() {
+        return (int) opReaderStream.getPosition();
     }
 
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    /// <param name="script">Script</param>
-    /// <param name="rvcount">Number of items to be returned</param>
-    internal ExecutionContext(Script script, int rvcount)
-    {
+    /**
+      * @Author:doubi.liu
+      * @description:设置指令指针
+      * @param value
+      * @date:2019/2/28
+    */
+    public void setInstructionPointer(int value) {
+        opReaderStream.seek(value);
+    }
+
+    /**
+      * @Author:doubi.liu
+      * @description:获取下一指令
+      * @param
+      * @date:2019/2/28
+    */
+    public OpCode getNextInstruction() {
+        int position = (int) opReaderStream.getPosition();
+
+        return (position >= script.getLength()) ? OpCode.RET : script.getOpcode(position);
+    }
+
+    /**
+     * @Author:doubi.liu
+     * @description:获取脚本哈希
+     * @date:2019/2/28
+     */
+    public byte[] getScriptHash() {
+        return script.getScriptHash();
+    }
+
+    /**
+     * @param script 脚本 rvcount 返回item数量
+     * @Author:doubi.liu
+     * @description:构造器
+     * @date:2019/2/28
+     */
+    ExecutionContext(Script script, int rvcount) {
         this.RVCount = rvcount;
-        this.Script = script;
-        this.OpReader = script.GetBinaryReader();
+        this.script = script;
+        this.opReaderStream=script.getMemoryStream();
+        this.opReader = new BinaryReader(this.opReaderStream);
     }
 
-    /// <summary>
-    /// Free resources
-    /// </summary>
-    public void Dispose() => OpReader.Dispose();
-*/
+    /**
+     * @Author:doubi.liu
+     * @description:释放资源
+     * @date:2019/2/28
+     */
+    public void dispose() {
+        opReader.close();
+    }
 
 }
