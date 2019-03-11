@@ -22,11 +22,16 @@ import static org.junit.Assert.*;
 public class ArrayTest {
     @Test
     public void getArrayItem() throws Exception {
+        StackItem[] stackitemArray=new StackItem[10];
+        Array ta=new Array(stackitemArray);
+
+
         StackItem a=new Boolean(true);
         List<StackItem> list=new ArrayList<>();
         list.add(a);
         Array array=new Array(list);
         Assert.assertEquals(a,array.getArrayItem(0));
+        Assert.assertEquals(false,array.IsReadOnly);
 
 
     }

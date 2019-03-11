@@ -84,8 +84,10 @@ public class Script {
      * @date:2019/2/28
      */
     public Script(ICrypto crypto, byte[] script) {
+        TR.enter();
         _crypto = crypto;
         _value = script;
+        TR.exit();
     }
 
     /**
@@ -95,7 +97,9 @@ public class Script {
       * @date:2019/2/28
     */
     Script(byte[] hash, byte[] script) {
+        TR.enter();
         _scriptHash = hash;
         _value = script;
+        TR.exit();
     }
 }

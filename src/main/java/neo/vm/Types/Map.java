@@ -3,10 +3,12 @@ package neo.vm.Types;
 import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 
 import neo.csharp.Out;
 import neo.log.notr.TR;
+import neo.vm.ICollection;
 import neo.vm.StackItem;
 
 /**
@@ -17,7 +19,7 @@ import neo.vm.StackItem;
  * @Description: Map是StackItem 的子类
  * @date Created in 15:56 2019/2/25
  */
-public class Map extends StackItem {
+public class Map extends StackItem implements ICollection<java.util.Map.Entry<StackItem, StackItem>>{
 
     /**
      * Map的内部寄存器
@@ -76,6 +78,7 @@ public class Map extends StackItem {
       * @param
       * @date:2019/2/26
     */
+    @Override
     public int getCount() {
         TR.enter();
         return TR.exit(dictionary.size());
@@ -297,5 +300,10 @@ public class Map extends StackItem {
         }else{
             return TR.exit(false);
         }
+    }
+
+    @Override
+    public Iterator<java.util.Map.Entry<StackItem, StackItem>> iterator() {
+        return getEnumerator().iterator();
     }
 }

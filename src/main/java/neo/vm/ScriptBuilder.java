@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.nio.Buffer;
 
 import neo.csharp.BitConverter;
 import neo.csharp.Ushort;
@@ -23,80 +22,162 @@ public class ScriptBuilder {
     private ByteArrayOutputStream ms = new ByteArrayOutputStream();
     private BinaryWriter writer;
 
+    /**
+      * @Author:doubi.liu
+      * @description:获取脚本读取指针的偏移位
+      * @param
+      * @date:2019/3/1
+    */
     public int getOffset() {
+        TR.enter();
         TR.fixMe("原生VM暂时未使用,暂时未支持ScriptBuilder的getOffset功能");
-        throw new UnsupportedOperationException();
+        throw TR.exit(new UnsupportedOperationException());
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:构造函数
+      * @param
+      * @date:2019/3/1
+    */
     public ScriptBuilder() {
         this.writer = new BinaryWriter(ms);
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:资源释放
+      * @param 
+      * @date:2019/3/1
+    */
     public void dispose() throws IOException {
-        writer.close();
-        ms.close();
+        TR.enter();
+        try {
+            writer.close();
+            ms.close();
+        } catch (IOException e) {
+            throw TR.exit(e);
+        }
+        TR.exit();
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入操作码
+      * @param op Opcode
+      * @date:2019/3/1
+    */
     public ScriptBuilder emit(OpCode op) {
+        TR.enter();
         byte[] arg = null;
         writer.writeByte(op.getCode());
         if (arg != null) {
             writer.write(arg);
         }
-        return this;
+        return TR.exit(this);
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入操作码和参数
+      * @param op OpCode arg 字节数组
+      * @date:2019/3/1
+    */
     public ScriptBuilder emit(OpCode op, byte[] arg) {
+        TR.enter();
         writer.writeByte(op.getCode());
         if (arg != null) {
             writer.write(arg);
         }
-        return this;
+        return TR.exit(this);
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入函数调用，函数由脚本哈希指定
+      * @param scriptHash
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitAppCall(byte[] scriptHash) {
+        TR.enter();
         boolean useTailCall = false;
         if (scriptHash.length != 20) {
-            throw new IllegalArgumentException();
+            throw TR.exit(new IllegalArgumentException());
         }
-        return emit(useTailCall ? OpCode.TAILCALL : OpCode.APPCALL, scriptHash);
+        return TR.exit(emit(useTailCall ? OpCode.TAILCALL : OpCode.APPCALL, scriptHash));
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入函数调用，函数由脚本哈希指定
+      * @param scriptHash useTailCall 是否启用尾调用
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitAppCall(byte[] scriptHash, boolean useTailCall) {
+        TR.enter();
         if (scriptHash.length != 20) {
-            throw new IllegalArgumentException();
+            throw TR.exit(new IllegalArgumentException());
         }
-        return emit(useTailCall ? OpCode.TAILCALL : OpCode.APPCALL, scriptHash);
+        return TR.exit(emit(useTailCall ? OpCode.TAILCALL : OpCode.APPCALL, scriptHash));
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入跳转指令
+      * @param op  offset 跳转指令偏移量
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitJump(OpCode op, short offset) {
+        TR.enter();
         if (op != OpCode.JMP && op != OpCode.JMPIF && op != OpCode.JMPIFNOT && op != OpCode.CALL) {
-            throw new IllegalArgumentException();
+            throw TR.exit(new IllegalArgumentException());
         }
-        return emit(op, BitConverter.getBytes(offset));
+        return TR.exit(emit(op, BitConverter.getBytes(offset)));
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入一个整数，包括整数对应的压栈指令和整数本身
+      * @param number 带符号整数
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitPush(BigInteger number) {
+        TR.enter();
         if (number.equals(new BigInteger("-1"))) {
-            return emit(OpCode.PUSHM1);
+            return TR.exit(emit(OpCode.PUSHM1));
         }
         if (number.equals(new BigInteger("0"))) {
-            return emit(OpCode.PUSH0);
+            return TR.exit(emit(OpCode.PUSH0));
         }
         if (number.compareTo(new BigInteger("0")) > 0
                 && number.compareTo(new BigInteger("16")) <= 0) {
-            return emit(OpCode.fromByte((byte) (OpCode.PUSH1.getCode() - 1 + number.byteValue())));
+            return TR.exit(emit(OpCode.fromByte((byte) (OpCode.PUSH1.getCode() - 1 + number
+                    .byteValue()))));
         }
-        return emitPush(number.toByteArray());
+        return TR.exit(emitPush(number.toByteArray()));
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入一个布尔类型的值
+      * @param data
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitPush(boolean data) {
-        return emit(data ? OpCode.PUSHT : OpCode.PUSHF);
+        TR.enter();
+        return TR.exit(emit(data ? OpCode.PUSHT : OpCode.PUSHF));
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入一个字节数组，首先判断字节数组的长度，对不同的长度使用不同的压栈指令
+      * @param data
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitPush(byte[] data) {
+        TR.enter();
         if (data == null) {
-            throw new IllegalArgumentException();
+            throw TR.exit(new IllegalArgumentException());
         }
         if (data.length <= (int) OpCode.PUSHBYTES75.getCode()) {
             writer.writeByte((byte) data.length);
@@ -115,38 +196,59 @@ public class ScriptBuilder {
             writer.writeInt(data.length);
             writer.write(data);
         }
-        return this;
+        return TR.exit(this);
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入一个字符串
+      * @param data
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitPush(String data) {
+        TR.enter();
         try {
-            return emitPush(data.getBytes("UTF-8"));
+            return TR.exit(emitPush(data.getBytes("UTF-8")));
         } catch (UnsupportedEncodingException e) {
             //一般不会发生，不处理
-            throw new RuntimeException(e);
+            throw TR.exit(new RuntimeException(e));
         }
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:向脚本生成器中写入指定的系统互操作服务调用
+      * @param api 系统互操作服务api字符串
+      * @date:2019/3/1
+    */
     public ScriptBuilder emitSysCall(String api) {
+        TR.enter();
         if (api == null)
-            throw new IllegalArgumentException();
+            throw TR.exit(new IllegalArgumentException());
         byte[] api_bytes = new byte[0];
         try {
             api_bytes = api.getBytes("ASCII");
         } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
+            throw TR.exit(new RuntimeException(e));
         }
         if (api_bytes.length == 0 || api_bytes.length > 252)
-            throw new IllegalArgumentException();
+            throw TR.exit(new IllegalArgumentException());
         byte[] arg = new byte[api_bytes.length + 1];
         arg[0] = (byte) api_bytes.length;
         //Buffer.BlockCopy(api_bytes, 0, arg, 1, api_bytes.length);
-        return emit(OpCode.SYSCALL, arg);
+        System.arraycopy(api_bytes, 0, arg, 1, api_bytes.length);
+        return TR.exit(emit(OpCode.SYSCALL, arg));
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:获取脚本生成器的内容
+      * @param
+      * @date:2019/3/1
+    */
     public byte[] toArray() {
+        TR.enter();
         writer.flush();
-        return ms.toByteArray();
+        return TR.exit(ms.toByteArray());
     }
-    //// TODO: 2019/2/28
 }

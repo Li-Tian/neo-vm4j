@@ -25,7 +25,7 @@ public class HashComparerTest {
     @Test
     public void getHashCode() throws Exception {
         HashComparer comparer=new HashComparer();
-        Assert.assertEquals(50462976,comparer.getHashCode(new byte[]{0x00,0x01,0x02,0x03}));
+        Assert.assertEquals(50462976,comparer.hashCode(new byte[]{0x00,0x01,0x02,0x03}));
     }
 
 }

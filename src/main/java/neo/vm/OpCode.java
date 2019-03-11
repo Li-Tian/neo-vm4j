@@ -3,6 +3,8 @@ package neo.vm;
 import java.util.HashMap;
 import java.util.Map;
 
+import neo.log.notr.TR;
+
 /**
  * @author doubi.liu
  * @version V1.0
@@ -22,6 +24,79 @@ public enum OpCode {
     /// 0x01-0x4B The next opcode bytes is data to be pushed onto the stack
     /// </summary>
     PUSHBYTES1(0x01),
+    PUSHBYTES2(0x02),
+    PUSHBYTES3(0x03),
+    PUSHBYTES4(0x04),
+    PUSHBYTES5(0x05),
+    PUSHBYTES6(0x06),
+    PUSHBYTES7(0x07),
+    PUSHBYTES8(0x08),
+    PUSHBYTES9(0x09),
+    PUSHBYTES10(0x0A),
+    PUSHBYTES11(0x0B),
+    PUSHBYTES12(0x0C),
+    PUSHBYTES13(0x0D),
+    PUSHBYTES14(0x0E),
+    PUSHBYTES15(0x0F),
+    PUSHBYTES16(0x10),
+    PUSHBYTES17(0x11),
+    PUSHBYTES18(0x12),
+    PUSHBYTES19(0x13),
+    PUSHBYTES20(0x14),
+    PUSHBYTES21(0x15),
+    PUSHBYTES22(0x16),
+    PUSHBYTES23(0x17),
+    PUSHBYTES24(0x18),
+    PUSHBYTES25(0x19),
+    PUSHBYTES26(0x1A),
+    PUSHBYTES27(0x1B),
+    PUSHBYTES28(0x1C),
+    PUSHBYTES29(0x1D),
+    PUSHBYTES30(0x1E),
+    PUSHBYTES31(0x1F),
+    PUSHBYTES32(0x20),
+    PUSHBYTES33(0x21),
+    PUSHBYTES34(0x22),
+    PUSHBYTES35(0x23),
+    PUSHBYTES36(0x24),
+    PUSHBYTES37(0x25),
+    PUSHBYTES38(0x26),
+    PUSHBYTES39(0x27),
+    PUSHBYTES40(0x28),
+    PUSHBYTES41(0x29),
+    PUSHBYTES42(0x2A),
+    PUSHBYTES43(0x2B),
+    PUSHBYTES44(0x2C),
+    PUSHBYTES45(0x2D),
+    PUSHBYTES46(0x2E),
+    PUSHBYTES47(0x2F),
+    PUSHBYTES48(0x30),
+    PUSHBYTES49(0x31),
+    PUSHBYTES50(0x32),
+    PUSHBYTES51(0x33),
+    PUSHBYTES52(0x34),
+    PUSHBYTES53(0x35),
+    PUSHBYTES54(0x36),
+    PUSHBYTES55(0x37),
+    PUSHBYTES56(0x38),
+    PUSHBYTES57(0x39),
+    PUSHBYTES58(0x3A),
+    PUSHBYTES59(0x3B),
+    PUSHBYTES60(0x3C),
+    PUSHBYTES61(0x3D),
+    PUSHBYTES62(0x3E),
+    PUSHBYTES63(0x3F),
+    PUSHBYTES64(0x40),
+    PUSHBYTES65(0x41),
+    PUSHBYTES66(0x42),
+    PUSHBYTES67(0x43),
+    PUSHBYTES68(0x44),
+    PUSHBYTES69(0x45),
+    PUSHBYTES70(0x46),
+    PUSHBYTES71(0x47),
+    PUSHBYTES72(0x48),
+    PUSHBYTES73(0x49),
+    PUSHBYTES74(0x4A),
     PUSHBYTES75(0x4B),
     /// <summary>
     /// The next byte contains the number of bytes to be pushed onto the stack.
@@ -488,32 +563,64 @@ public enum OpCode {
     /// </summary>
     THROWIFNOT(0xF1);
 
+    //字节数据和OpCode的映射关系
     private static final Map<Byte, OpCode> byteToTypeMap = new HashMap<Byte, OpCode>();
 
     static {
+        TR.info("Opcode枚举器初始化");
         for (OpCode type : OpCode.values()) {
             byteToTypeMap.put(type.getCode(), type);
         }
     }
     private byte code;
 
+    /**
+      * @Author:doubi.liu
+      * @description:构造函数
+      * @param value 字节数据
+      * @date:2019/3/11
+    */
     OpCode(int value) {
+        TR.enter();
         code = (byte) value;
+        TR.exit();
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:构造函数
+      * @param value opcode
+      * @date:2019/3/11
+    */
     OpCode(OpCode value) {
+        TR.enter();
         this.code = value.getCode();
+        TR.exit();
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:获取OpCode的字节数据
+      * @param
+      * @date:2019/3/11
+    */
     public byte getCode() {
-        return code;
+        TR.enter();
+        return TR.exit(code);
     }
 
+    /**
+      * @Author:doubi.liu
+      * @description:通过字节数据获取OpCode
+      * @param i 字节数据
+      * @date:2019/3/11
+    */
     public static OpCode fromByte(byte i) {
+        TR.enter();
         OpCode type = byteToTypeMap.get(i);
         if (type == null){
-            throw new UnsupportedOperationException();
+            throw TR.exit(new UnsupportedOperationException());
         }
-        return type;
+        return TR.exit(type);
     }
 }

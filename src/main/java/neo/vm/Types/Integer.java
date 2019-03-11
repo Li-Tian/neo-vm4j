@@ -34,6 +34,17 @@ public class Integer extends StackItem {
 
     /**
      * @Author:doubi.liu
+     * @description: 构造函数
+     * @date:2019/2/25
+     */
+    public Integer(int value) {
+        TR.enter();
+        this.value = new BigInteger(String.valueOf(value));
+        TR.exit();
+    }
+
+    /**
+     * @Author:doubi.liu
      * @description: 判等方法
      * @date:2019/2/25
      */

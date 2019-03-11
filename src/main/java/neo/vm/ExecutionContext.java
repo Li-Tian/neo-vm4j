@@ -2,6 +2,7 @@ package neo.vm;
 
 import neo.csharp.io.BinaryReader;
 import neo.csharp.io.MemoryStream;
+import neo.log.notr.TR;
 
 /**
  * @author doubi.liu
@@ -14,13 +15,13 @@ import neo.csharp.io.MemoryStream;
 public class ExecutionContext {
 
     //返回的items数量
-    private int RVCount;
+    int RVCount;
 
     //脚本的BinaryReader
-    private BinaryReader opReader;
+    BinaryReader opReader;
 
     //脚本的BinaryReader的流
-    private MemoryStream opReaderStream;
+    MemoryStream opReaderStream;
 
     //Script
     public Script script;
@@ -39,7 +40,8 @@ public class ExecutionContext {
      * @date:2019/2/28
      */
     public RandomAccessStack<StackItem> getEvaluationStack() {
-        return evaluationStack;
+        TR.enter();
+        return TR.exit(evaluationStack);
     }
 
     /**
@@ -48,7 +50,8 @@ public class ExecutionContext {
      * @date:2019/2/28
      */
     public RandomAccessStack<StackItem> getAltStack() {
-        return altStack;
+        TR.enter();
+        return TR.exit(altStack);
     }
 
     /**
@@ -58,7 +61,8 @@ public class ExecutionContext {
       * @date:2019/2/28
     */
     public int getInstructionPointer() {
-        return (int) opReaderStream.getPosition();
+        TR.enter();
+        return TR.exit(opReaderStream.getPosition());
     }
 
     /**
@@ -68,7 +72,9 @@ public class ExecutionContext {
       * @date:2019/2/28
     */
     public void setInstructionPointer(int value) {
+        TR.enter();
         opReaderStream.seek(value);
+        TR.exit();
     }
 
     /**
@@ -78,9 +84,11 @@ public class ExecutionContext {
       * @date:2019/2/28
     */
     public OpCode getNextInstruction() {
+        TR.enter();
         int position = (int) opReaderStream.getPosition();
 
-        return (position >= script.getLength()) ? OpCode.RET : script.getOpcode(position);
+        OpCode result= (position >= script.getLength()) ? OpCode.RET : script.getOpcode(position);
+        return TR.exit(result);
     }
 
     /**
@@ -89,7 +97,8 @@ public class ExecutionContext {
      * @date:2019/2/28
      */
     public byte[] getScriptHash() {
-        return script.getScriptHash();
+        TR.enter();
+        return TR.exit(script.getScriptHash());
     }
 
     /**
@@ -99,10 +108,12 @@ public class ExecutionContext {
      * @date:2019/2/28
      */
     ExecutionContext(Script script, int rvcount) {
+        TR.enter();
         this.RVCount = rvcount;
         this.script = script;
         this.opReaderStream=script.getMemoryStream();
         this.opReader = new BinaryReader(this.opReaderStream);
+        TR.exit();
     }
 
     /**
@@ -111,7 +122,9 @@ public class ExecutionContext {
      * @date:2019/2/28
      */
     public void dispose() {
+        TR.enter();
         opReader.close();
+        TR.exit();
     }
 
 }

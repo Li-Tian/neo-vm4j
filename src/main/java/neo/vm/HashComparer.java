@@ -32,7 +32,7 @@ public class HashComparer{
       * @param obj
       * @date:2019/2/28
     */
-    public int getHashCode(byte[] obj)
+    public int hashCode(byte[] obj)
     {
         TR.enter();
         return TR.exit(BitConverter.toInt(obj));

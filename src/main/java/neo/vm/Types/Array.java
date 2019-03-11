@@ -5,8 +5,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 import neo.log.notr.TR;
+import neo.vm.ICollection;
 import neo.vm.StackItem;
 
 /**
@@ -17,7 +20,7 @@ import neo.vm.StackItem;
  * @Description: Array是StackItem的子类
  * @date Created in 14:15 2019/2/25
  */
-public class Array extends StackItem {
+public class Array extends StackItem implements ICollection<StackItem> {
 
     /**
      * 内部寄存器，存储StackItem对象集合
@@ -52,6 +55,7 @@ public class Array extends StackItem {
      * @description:Array对象内部元素的个数
      * @date:2019/2/26
      */
+    @Override
     public int getCount() {
         TR.enter();
         return TR.exit(_array.size());
@@ -270,5 +274,10 @@ public class Array extends StackItem {
         TR.enter();
         Collections.reverse(_array);
         TR.exit();
+    }
+
+    @Override
+    public Iterator iterator() {
+        return _array.iterator();
     }
 }

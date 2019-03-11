@@ -53,7 +53,11 @@ public abstract class StackItem {
 
     public BigInteger getBigInteger() {
         TR.enter();
-        return TR.exit(new BigInteger(getByteArray()));
+        if (getByteArray().length==0){
+            return TR.exit(new BigInteger("0"));
+        }else{
+            return TR.exit(new BigInteger(getByteArray()));
+        }
     }
 
     public boolean getBoolean() {

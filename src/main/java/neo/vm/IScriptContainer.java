@@ -15,5 +15,5 @@ public interface IScriptContainer {
       * @param
       * @date:2019/2/27
     */
-    byte[] GetMessage();
+    byte[] getMessage();
 }
