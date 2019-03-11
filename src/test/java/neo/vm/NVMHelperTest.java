@@ -72,4 +72,19 @@ public class NVMHelperTest {
             Assert.fail();
         }
     }
+
+    @Test
+    public void testReadVarInt5() {
+        byte[] sample = {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+                (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(sample);
+        long value;
+        try {
+            value = NVMHelper.readVarInt(byteArrayInputStream);
+            Assert.fail();
+        } catch (IOException e) {
+            // SUCCESS
+        }
+    }
+
 }

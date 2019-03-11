@@ -61,8 +61,8 @@ class NVMHelper {
     public static long readVarInt(InputStream reader, long max) throws IOException {
         TR.enter();
         long value = BitConverter.decodeVarInt(reader);
-        if (value > max) {
-            throw new IOException("VarInt out of specified range : " + value);
+        if (value > max | value < 0) {
+            throw new IOException("VarInt value out of defined range : " + value);
         }
         return TR.exit(value);
     }
