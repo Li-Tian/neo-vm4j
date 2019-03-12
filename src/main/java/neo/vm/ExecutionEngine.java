@@ -13,6 +13,7 @@ import java.util.Map;
 
 import neo.csharp.Out;
 import neo.csharp.Uint;
+import neo.csharp.common.IDisposable;
 import neo.log.notr.TR;
 import neo.vm.Types.Array;
 import neo.vm.Types.Boolean;
@@ -27,7 +28,7 @@ import neo.vm.Types.Struct;
  * @Description: VM 基础执行引擎
  * @date Created in 15:21 2019/2/28
  */
-public class ExecutionEngine {
+public class ExecutionEngine implements IDisposable{
 
     //外部可供调用脚本容器表
     private IScriptTable table;
@@ -124,6 +125,7 @@ public class ExecutionEngine {
      * @description:释放资源
      * @date:2019/3/1
      */
+    @Override
     public void dispose() {
         TR.enter();
         while (invocationStack.getCount() > 0) {

@@ -1,5 +1,6 @@
 package neo.vm;
 
+import neo.csharp.common.IDisposable;
 import neo.csharp.io.BinaryReader;
 import neo.csharp.io.MemoryStream;
 import neo.log.notr.TR;
@@ -12,7 +13,7 @@ import neo.log.notr.TR;
  * @Description: 虚拟机执行上下文
  * @date Created in 17:23 2019/2/27
  */
-public class ExecutionContext {
+public class ExecutionContext implements IDisposable{
 
     //返回的items数量
     int RVCount;
@@ -121,6 +122,7 @@ public class ExecutionContext {
      * @description:释放资源
      * @date:2019/2/28
      */
+    @Override
     public void dispose() {
         TR.enter();
         opReader.close();

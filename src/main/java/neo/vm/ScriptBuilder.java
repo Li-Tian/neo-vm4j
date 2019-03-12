@@ -7,6 +7,7 @@ import java.math.BigInteger;
 
 import neo.csharp.BitConverter;
 import neo.csharp.Ushort;
+import neo.csharp.common.IDisposable;
 import neo.csharp.io.BinaryWriter;
 import neo.log.notr.TR;
 
@@ -18,7 +19,7 @@ import neo.log.notr.TR;
  * @Description: 脚本构建器
  * @date Created in 14:16 2019/2/28
  */
-public class ScriptBuilder {
+public class ScriptBuilder implements IDisposable{
     private ByteArrayOutputStream ms = new ByteArrayOutputStream();
     private BinaryWriter writer;
 
@@ -50,13 +51,14 @@ public class ScriptBuilder {
       * @param 
       * @date:2019/3/1
     */
-    public void dispose() throws IOException {
+    @Override
+    public void dispose(){
         TR.enter();
         try {
             writer.close();
             ms.close();
         } catch (IOException e) {
-            throw TR.exit(e);
+            throw TR.exit(new RuntimeException(e));
         }
         TR.exit();
     }
