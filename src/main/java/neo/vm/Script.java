@@ -34,6 +34,17 @@ public class Script {
     }
 
     /**
+      * @Author:doubi.liu
+      * @description:获取脚本的字节数据
+      * @param 
+      * @date:2019/3/13
+    */
+    public byte[] getValue(){
+        TR.enter();
+        return TR.exit(_value);
+    }
+
+    /**
      * @Author:doubi.liu
      * @description:Script length
      * @date:2019/2/28

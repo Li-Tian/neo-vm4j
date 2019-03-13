@@ -13,7 +13,7 @@ import neo.log.notr.TR;
  * @Description: 虚拟机执行上下文
  * @date Created in 17:23 2019/2/27
  */
-public class ExecutionContext implements IDisposable{
+public class ExecutionContext implements IDisposable {
 
     //返回的items数量
     int RVCount;
@@ -25,7 +25,9 @@ public class ExecutionContext implements IDisposable{
     MemoryStream opReaderStream;
 
     //Script
-    public Script script;
+    public byte[] script;
+
+    private ICrypto crypto;
 
 
     //计算栈 Evaluation stack
@@ -56,22 +58,20 @@ public class ExecutionContext implements IDisposable{
     }
 
     /**
-      * @Author:doubi.liu
-      * @description:获取指令指针
-      * @param
-      * @date:2019/2/28
-    */
+     * @Author:doubi.liu
+     * @description:获取指令指针
+     * @date:2019/2/28
+     */
     public int getInstructionPointer() {
         TR.enter();
         return TR.exit(opReaderStream.getPosition());
     }
 
     /**
-      * @Author:doubi.liu
-      * @description:设置指令指针
-      * @param value
-      * @date:2019/2/28
-    */
+     * @Author:doubi.liu
+     * @description:设置指令指针
+     * @date:2019/2/28
+     */
     public void setInstructionPointer(int value) {
         TR.enter();
         opReaderStream.seek(value);
@@ -79,18 +79,21 @@ public class ExecutionContext implements IDisposable{
     }
 
     /**
-      * @Author:doubi.liu
-      * @description:获取下一指令
-      * @param
-      * @date:2019/2/28
-    */
+     * @Author:doubi.liu
+     * @description:获取下一指令
+     * @date:2019/2/28
+     */
     public OpCode getNextInstruction() {
         TR.enter();
         int position = (int) opReaderStream.getPosition();
+        if (position >= script.length) {
+            return TR.exit(OpCode.RET);
+        }
 
-        OpCode result= (position >= script.getLength()) ? OpCode.RET : script.getOpcode(position);
-        return TR.exit(result);
+        return TR.exit(OpCode.fromByte(script[position]));
     }
+
+    private byte[] _script_hash = null;
 
     /**
      * @Author:doubi.liu
@@ -99,7 +102,9 @@ public class ExecutionContext implements IDisposable{
      */
     public byte[] getScriptHash() {
         TR.enter();
-        return TR.exit(script.getScriptHash());
+        if (_script_hash == null)
+            _script_hash = crypto.hash160(script);
+        return TR.exit(_script_hash);
     }
 
     /**
@@ -108,11 +113,12 @@ public class ExecutionContext implements IDisposable{
      * @description:构造器
      * @date:2019/2/28
      */
-    ExecutionContext(Script script, int rvcount) {
+    ExecutionContext(ExecutionEngine engine, byte[] script, int rvcount) {
         TR.enter();
         this.RVCount = rvcount;
         this.script = script;
-        this.opReaderStream=script.getMemoryStream();
+        this.crypto = engine.crypto;
+        this.opReaderStream = new MemoryStream(script);
         this.opReader = new BinaryReader(this.opReaderStream);
         TR.exit();
     }

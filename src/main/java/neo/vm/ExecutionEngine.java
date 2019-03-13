@@ -213,7 +213,7 @@ public class ExecutionEngine implements IDisposable{
                 case JMPIFNOT: {
                     int offset = context.opReader.readShort();
                     offset = context.getInstructionPointer() + offset - 3;
-                    if (offset < 0 || offset > context.script.getLength()) {
+                    if (offset < 0 || offset > context.script.length) {
                         tempType = state.getState();
                         tempType |= VMState.FAULT.getState();
                         state = VMState.fromByte((byte) tempType);
@@ -1234,7 +1234,10 @@ public class ExecutionEngine implements IDisposable{
      */
     public ExecutionContext loadScript(byte[] script, int rvcount) {
         TR.enter();
+        ExecutionContext context = new ExecutionContext(this, script, rvcount);
+/*
         ExecutionContext context = new ExecutionContext(new Script(crypto, script), rvcount);
+*/
         invocationStack.push(context);
         return TR.exit(context);
     }
@@ -1247,7 +1250,10 @@ public class ExecutionEngine implements IDisposable{
      */
     public ExecutionContext loadScript(byte[] script) {
         TR.enter();
+        ExecutionContext context = new ExecutionContext(this, script, -1);
+/*
         ExecutionContext context = new ExecutionContext(new Script(crypto, script), -1);
+*/
         invocationStack.push(context);
         return TR.exit(context);
     }
@@ -1260,7 +1266,10 @@ public class ExecutionEngine implements IDisposable{
      */
     private ExecutionContext loadScript(Script script, int rvcount) {
         TR.enter();
+        ExecutionContext context = new ExecutionContext(this, script.getValue(), rvcount);
+/*
         ExecutionContext context = new ExecutionContext(script, rvcount);
+*/
         invocationStack.push(context);
         return TR.exit(context);
     }
@@ -1273,7 +1282,7 @@ public class ExecutionEngine implements IDisposable{
      */
     private ExecutionContext loadScript(Script script) {
         TR.enter();
-        ExecutionContext context = new ExecutionContext(script, -1);
+        ExecutionContext context = new ExecutionContext(this,script.getValue(), -1);
         invocationStack.push(context);
         return TR.exit(context);
     }
@@ -1293,7 +1302,7 @@ public class ExecutionEngine implements IDisposable{
         if (script == null) {
             return TR.exit(null);
         }
-        ExecutionContext context = new ExecutionContext(new Script(hash, script), rvcount);
+        ExecutionContext context = new ExecutionContext(this,new Script(hash, script).getValue(), rvcount);
         invocationStack.push(context);
         return context;
     }
@@ -1313,7 +1322,7 @@ public class ExecutionEngine implements IDisposable{
         if (script == null) {
             return TR.exit(null);
         }
-        ExecutionContext context = new ExecutionContext(new Script(hash, script), -1);
+        ExecutionContext context = new ExecutionContext(this,new Script(hash, script).getValue(), -1);
         invocationStack.push(context);
         return TR.exit(context);
     }
@@ -1357,7 +1366,7 @@ public class ExecutionEngine implements IDisposable{
             return;
         }
         OpCode opcode = getCurrentContext().getInstructionPointer() >= getCurrentContext().script
-                .getLength() ?
+                .length ?
                 OpCode.RET : (OpCode.fromByte((byte) getCurrentContext().opReader.readByte()));
         try {
             executeOp(opcode, getCurrentContext());

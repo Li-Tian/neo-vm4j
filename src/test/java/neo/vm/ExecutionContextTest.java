@@ -19,7 +19,8 @@ public class ExecutionContextTest {
     @Test
     public void getEvaluationStack() throws Exception {
         Script script=new Script(new byte[1],new byte[1]);
-        ExecutionContext context=new ExecutionContext(script,0);
+        ExecutionEngine engine=new ExecutionEngine(null,Crypto.Default);
+        ExecutionContext context=new ExecutionContext(engine,script.getValue(),0);
         Assert.assertEquals(0,context.getEvaluationStack().getCount());
 
     }
@@ -27,21 +28,24 @@ public class ExecutionContextTest {
     @Test
     public void getAltStack() throws Exception {
         Script script=new Script(new byte[1],new byte[1]);
-        ExecutionContext context=new ExecutionContext(script,0);
+        ExecutionEngine engine=new ExecutionEngine(null,Crypto.Default);
+        ExecutionContext context=new ExecutionContext(engine,script.getScriptHash(),0);
         Assert.assertEquals(0,context.getAltStack().getCount());
     }
 
     @Test
     public void getInstructionPointer() throws Exception {
         Script script=new Script(new byte[1],new byte[1]);
-        ExecutionContext context=new ExecutionContext(script,1);
+        ExecutionEngine engine=new ExecutionEngine(null,Crypto.Default);
+        ExecutionContext context=new ExecutionContext(engine,script.getValue(),1);
         Assert.assertEquals(0,context.getInstructionPointer());
     }
 
     @Test
     public void setInstructionPointer() throws Exception {
         Script script=new Script(new byte[1],new byte[1]);
-        ExecutionContext context=new ExecutionContext(script,1);
+        ExecutionEngine engine=new ExecutionEngine(null,Crypto.Default);
+        ExecutionContext context=new ExecutionContext(engine,script.getValue(),1);
         context.setInstructionPointer(1);
         Assert.assertEquals(1,context.getInstructionPointer());
     }
@@ -49,7 +53,8 @@ public class ExecutionContextTest {
     @Test
     public void getNextInstruction() throws Exception {
         Script script=new Script(new byte[1],new byte[1]);
-        ExecutionContext context=new ExecutionContext(script,1);
+        ExecutionEngine engine=new ExecutionEngine(null,Crypto.Default);
+        ExecutionContext context=new ExecutionContext(engine,script.getValue(),1);
         Assert.assertEquals(OpCode.PUSH0,context.getNextInstruction());
     }
 
@@ -57,7 +62,8 @@ public class ExecutionContextTest {
     public void getScriptHash() throws Exception {
         byte[] script_code=new byte[]{0x00};
         Script script=new Script(new TestCrypto(),script_code);
-        ExecutionContext context=new ExecutionContext(script,1);
+        ExecutionEngine engine=new ExecutionEngine(null,new TestCrypto());
+        ExecutionContext context=new ExecutionContext(engine,script.getValue(),1);
         Assert.assertEquals(true, Arrays.equals(new byte[0],context.getScriptHash()));
     }
 
@@ -65,7 +71,8 @@ public class ExecutionContextTest {
     public void dispose() throws Exception {
         byte[] script_code=new byte[]{0x00};
         Script script=new Script(new TestCrypto(),script_code);
-        ExecutionContext context=new ExecutionContext(script,1);
+        ExecutionEngine engine=new ExecutionEngine(null,Crypto.Default);
+        ExecutionContext context=new ExecutionContext(engine,script.getValue(),1);
         context.dispose();
     }
 

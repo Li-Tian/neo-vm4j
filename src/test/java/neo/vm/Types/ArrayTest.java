@@ -40,10 +40,12 @@ public class ArrayTest {
     public void setArrayItem() throws Exception {
         StackItem a=new Boolean(true);
         StackItem b=new Boolean(false);
+        StackItem c=new Boolean(false);
         List<StackItem> list=new ArrayList<>();
         list.add(a);
+        list.add(b);
         Array array=new Array(list);
-        Assert.assertEquals(b,array.setArrayItem(0,b));
+        Assert.assertEquals(c,array.setArrayItem(0,c));
     }
 
     @Test
