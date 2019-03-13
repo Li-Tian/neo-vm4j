@@ -46,8 +46,7 @@ public class Array extends StackItem implements ICollection<StackItem> {
      */
     public StackItem setArrayItem(int index, StackItem item) {
         TR.enter();
-        _array.set(index, item);
-        return TR.exit(_array.get(index));
+        return TR.exit(_array.set(index, item));
     }
 
     /**
