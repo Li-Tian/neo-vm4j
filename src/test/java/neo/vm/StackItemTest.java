@@ -54,7 +54,7 @@ public class StackItemTest {
     @Test
     public void getHashCode() throws Exception {
         StackItem item=new Integer(new BigInteger("0"));
-        Assert.assertEquals(527, item.getHashCode());
+        Assert.assertEquals(527, item.hashCode());
     }
 
     @Test

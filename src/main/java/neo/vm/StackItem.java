@@ -70,7 +70,8 @@ public abstract class StackItem {
 
     public abstract byte[] getByteArray();
 
-    public int getHashCode() {
+    @Override
+    public int hashCode() {
         TR.enter();
         int hash = 17;
         for (byte element : getByteArray()) {

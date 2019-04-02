@@ -23,12 +23,17 @@ public class MapTest {
 
     @Test
     public void getMapItem() throws Exception {
-
         Map map = new Map();
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.setMapItem(key, value);
+
+        StackItem newKey = new Integer(new BigInteger("0"));
         Assert.assertEquals(value, map.getMapItem(key));
+        Assert.assertTrue(newKey.equals(key));
+        Assert.assertTrue(newKey.hashCode() == key.hashCode());
+        Assert.assertTrue(map.containsKey(newKey));
+        Assert.assertEquals(value, map.getMapItem(newKey));
     }
 
     @Test
@@ -82,8 +87,8 @@ public class MapTest {
         Map map = new Map();
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
-        AbstractMap.SimpleEntry<StackItem,StackItem> entry=new AbstractMap.SimpleEntry<StackItem,
-                StackItem>(key,value);
+        AbstractMap.SimpleEntry<StackItem, StackItem> entry = new AbstractMap.SimpleEntry<StackItem,
+                StackItem>(key, value);
         map.add(entry);
     }
 
@@ -105,10 +110,10 @@ public class MapTest {
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
 
-        HashMap<StackItem,StackItem> tempmap = new HashMap();
+        HashMap<StackItem, StackItem> tempmap = new HashMap();
         tempmap.put(key, value);
 
-        for (java.util.Map.Entry<StackItem,StackItem> entry : tempmap.entrySet()) {
+        for (java.util.Map.Entry<StackItem, StackItem> entry : tempmap.entrySet()) {
             Assert.assertEquals(true, map.contains(entry));
         }
 
@@ -125,14 +130,14 @@ public class MapTest {
 
     @Test
     public void copyTo() throws Exception {
-        AbstractMap.SimpleEntry<StackItem,StackItem>[] array=new AbstractMap.SimpleEntry[1];
+        AbstractMap.SimpleEntry<StackItem, StackItem>[] array = new AbstractMap.SimpleEntry[1];
         Map map = new Map();
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
-        map.copyTo(array,0);
-        java.util.Map.Entry entry=array[0];
-        Assert.assertEquals(true,entry.getKey().equals(key)&&entry.getValue().equals(value));
+        map.copyTo(array, 0);
+        java.util.Map.Entry entry = array[0];
+        Assert.assertEquals(true, entry.getKey().equals(key) && entry.getValue().equals(value));
 
 /*        java.util.Map.Entry<StackItem, StackItem>[] array=new java.util.Map.Entry<StackItem,
                 StackItem>[1];*/
@@ -155,7 +160,7 @@ public class MapTest {
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
-        Assert.assertEquals(true,map.getBoolean());
+        Assert.assertEquals(true, map.getBoolean());
     }
 
     @Test(expected = UnsupportedOperationException.class)
@@ -170,10 +175,10 @@ public class MapTest {
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
-        Iterator<java.util.Map.Entry<StackItem, StackItem>> iterator=map.getEnumerator().iterator();
+        Iterator<java.util.Map.Entry<StackItem, StackItem>> iterator = map.getEnumerator().iterator();
         while (iterator.hasNext()) {
-            java.util.Map.Entry<StackItem, StackItem> temp=iterator.next();
-            Assert.assertEquals(true,temp.getKey().equals(key)&&temp.getValue().equals(value));
+            java.util.Map.Entry<StackItem, StackItem> temp = iterator.next();
+            Assert.assertEquals(true, temp.getKey().equals(key) && temp.getValue().equals(value));
         }
     }
 
@@ -183,7 +188,7 @@ public class MapTest {
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
-        Assert.assertEquals(true,map.remove(key));
+        Assert.assertEquals(true, map.remove(key));
     }
 
     @Test
@@ -192,10 +197,10 @@ public class MapTest {
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
-        HashMap<StackItem,StackItem> tempmap=new HashMap<>();
-        tempmap.put(key,value);
-        for (java.util.Map.Entry<StackItem,StackItem> entry:tempmap.entrySet()){
-            Assert.assertEquals(true,map.remove(entry));
+        HashMap<StackItem, StackItem> tempmap = new HashMap<>();
+        tempmap.put(key, value);
+        for (java.util.Map.Entry<StackItem, StackItem> entry : tempmap.entrySet()) {
+            Assert.assertEquals(true, map.remove(entry));
         }
 
     }
@@ -206,9 +211,9 @@ public class MapTest {
         StackItem key = new Integer(new BigInteger("0"));
         StackItem value = new Integer(new BigInteger("1"));
         map.add(key, value);
-        Out<StackItem> out=new Out<>();
-        map.tryGetValue(key,out);
-        Assert.assertEquals(value,out.get());
+        Out<StackItem> out = new Out<>();
+        map.tryGetValue(key, out);
+        Assert.assertEquals(value, out.get());
     }
 
 }
