@@ -13,24 +13,26 @@ import neo.log.notr.TR;
  * @Description: 虚拟机状态枚举类
  * @date Created in 17:14 2019/2/27
  */
-public enum VMState {
+public class VMState {
     //正常
-    NONE(0),
+    public static final VMState NONE=new VMState(0);
     //停止（正常结束）
-    HALT(1 << 0),
+    public static final VMState HALT=new VMState(1 << 0);
     //故障
-    FAULT(1 << 1),
+    public static final VMState FAULT=new VMState(1 << 1);
     //断点
-    BREAK(1 << 2);
+    public static final VMState BREAK=new VMState(1 << 2);
 
     //字节数据和VM状态的映射关系
     private static final Map<Byte, VMState> byteToTypeMap = new HashMap<Byte, VMState>();
 
     static {
-        TR.info("VMState枚举器初始化");
-        for (VMState type : VMState.values()) {
-            byteToTypeMap.put(type.getState(), type);
-        }
+
+        byteToTypeMap.put(NONE.getState(), NONE);
+        byteToTypeMap.put(HALT.getState(), HALT);
+        byteToTypeMap.put(FAULT.getState(), FAULT);
+        byteToTypeMap.put(BREAK.getState(), BREAK);
+
     }
     private byte state;
 
@@ -67,7 +69,8 @@ public enum VMState {
         TR.enter();
         VMState type = byteToTypeMap.get(i);
         if (type == null){
-            throw TR.exit(new UnsupportedOperationException());
+            return new VMState(i);
+            //throw TR.exit(new UnsupportedOperationException());
         }
         return TR.exit(type);
     }
